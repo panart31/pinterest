@@ -1,0 +1,22 @@
+%% Загрузка изображения (рисунок 5)
+sequenceDiagram
+    autonumber
+    participant C as Клиент
+    participant S as HTTPServer
+    participant M as Multipart
+    participant A as API posts
+    participant F as Storage
+    participant D as SQLite
+
+    C->>S: POST /api/posts (multipart, до 5 МБ)
+    S->>M: parse_multipart(body)
+    M-->>S: части image и caption
+    S->>A: Request + сессия
+    A->>F: detect_image_extension + save()
+    F-->>A: uuid.png
+    A->>D: INSERT INTO posts
+    D-->>A: id = 11
+    A-->>S: 201 Created {post}
+    S-->>C: HTTP/1.1 201 + JSON
+
+    Note over C,D: Файл сохраняется под случайным именем;<br/>исходное имя не используется

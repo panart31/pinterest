@@ -1,0 +1,17 @@
+%% Компонентная схема сервера (рисунок 2)
+flowchart TB
+    A["TCP-сокет<br/>core/server.py: accept, recv, sendall, поток на соединение"]
+    B["HTTP-парсер<br/>http/request.py · http/response.py · http/multipart.py"]
+    C["Маршрутизатор<br/>http/router.py: метод + шаблон пути → обработчик"]
+    D["Обработчики API<br/>api/auth.py · posts.py · users.py · messages.py"]
+    E["Репозиторий<br/>db/repository.py: параметризованные SQL-запросы"]
+    F["SQLite<br/>db/database.py"]
+    G["Файловое хранилище<br/>core/storage.py"]
+    S["Сессии<br/>core/sessions.py"]
+    K["Безопасность<br/>core/security.py: PBKDF2, валидация, safe_join"]
+
+    A --> B --> C --> D --> E
+    E --> F
+    E --> G
+    S <--> D
+    K <--> D

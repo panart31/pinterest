@@ -1,0 +1,17 @@
+%% Обмен личными сообщениями (рисунок 6)
+sequenceDiagram
+    autonumber
+    participant A as Клиент А (Ксения)
+    participant S as Сервер
+    participant B as Клиент Б (Артём)
+
+    A->>S: POST /api/messages/artem {text}
+    S-->>B: при следующем опросе: unread = 1
+    B->>S: GET /api/messages/ksenia?after_id=41
+    S-->>B: messages: [42]
+    B->>S: POST /api/messages/ksenia/read
+    S-->>B: updated = 1
+    B->>S: POST /api/messages/ksenia {text}
+    S-->>A: GET ...?after_id=42 → новый ответ
+
+    Note over A,B: Опрос идёт, пока открыт диалог;<br/>окно скрыто — запросов нет

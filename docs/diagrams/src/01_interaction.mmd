@@ -1,0 +1,21 @@
+%% Схема взаимодействия (рисунок 1)
+flowchart LR
+    subgraph S["Ноутбук 1 — сервер"]
+        direction TB
+        S1["server/main.py<br/>--host 0.0.0.0 --port 8000"]
+        S2["HTTP/1.1 на TCP-сокетах"]
+        S3["SQLite: storage/mosaic.db"]
+        S4["Файлы: storage/uploads"]
+        S5["Журнал: консоль + server.log"]
+    end
+
+    subgraph C["Ноутбук 2 — клиент"]
+        direction TB
+        C1["Браузер: SPA (HTML, CSS, JS)"]
+        C2["client_raw.py — клиент на сокетах"]
+        C3["Wireshark — анализ трафика"]
+    end
+
+    C1 -- "HTTP-запрос (GET /api/feed HTTP/1.1)" --> S2
+    S2 -- "HTTP-ответ (200 OK, JSON)" --> C1
+    C2 -. "TCP, порт 8000" .- S2

@@ -1,0 +1,72 @@
+%% Диаграмма классов (рисунок 3)
+classDiagram
+    class HTTPServer {
+        -Config config
+        -socket _socket
+        +start()
+        +serve_forever()
+        +shutdown()
+    }
+
+    class Application {
+        -Router router
+        -Repository repo
+        -SessionManager sessions
+        -Storage storage
+        +dispatch(request)
+    }
+
+    class Router {
+        -list~Route~ _routes
+        +add(method, pattern)
+        +match(method, path)
+    }
+
+    class Request {
+        +str method
+        +str path
+        +dict query
+        +bytes body
+        +json_body()
+    }
+
+    class Response {
+        +int status
+        +dict headers
+        +bytes body
+        +set_cookie()
+        +send(socket)
+    }
+
+    class SessionManager {
+        -Repository repository
+        +create(user_id)
+        +resolve(token)
+        +destroy(token)
+    }
+
+    class Storage {
+        -Path root
+        +save(data, ext)
+        +read(name)
+    }
+
+    class Repository {
+        +list_posts()
+        +create_message()
+        +toggle_like()
+    }
+
+    class Database {
+        +connection()
+        +init_schema()
+    }
+
+    HTTPServer --> Application : использует
+    Application --> Router : маршруты
+    Application ..> Request : создаёт
+    Application ..> Response : возвращает
+    Application --> SessionManager
+    Application --> Storage
+    Application --> Repository
+    Repository --> Database : SQL

@@ -1,0 +1,17 @@
+%% Блок-схема обработки запроса (рисунок 7)
+flowchart TD
+    Start([accept()]) --> Read["read_request(): строка, заголовки"]
+    Read --> Valid{"запрос<br/>корректен?"}
+    Valid -- нет --> E400["400 Bad Request"]
+    Valid -- да --> Size["Content-Length ≤ 6 МБ"]
+    Size --> Limit{"тело<br/>в лимите?"}
+    Limit -- нет --> E413["413 Payload Too Large"]
+    Limit -- да --> Route["router.match(method, path)"]
+    Route --> Found{"маршрут<br/>найден?"}
+    Found -- нет --> E404["404 / 405"]
+    Found -- да --> Auth{"нужна сессия<br/>и она есть?"}
+    Auth -- нет --> E401["401 Unauthorized"]
+    Auth -- да --> Handler["handler(request, params, ctx, user)"]
+    Handler --> Send([Response.sendall()])
+
+    Send -.-> Log["журнал и close()"]
