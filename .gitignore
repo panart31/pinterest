@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Данные приложения
+storage/
+server.log
+client_raw/.session
+*.db
+*.db-wal
+*.db-shm
+
+# Результаты сборки документов
+docs/*.pdf
+docs/~$*
+
+# Случайные файлы Windows
+/nul
+
+# IDE
+.vs/
+.idea/
+.vscode/

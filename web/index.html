@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мозаика — лента</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='15' height='15' x='1' y='1' rx='4' fill='%23d6396f'/%3E%3Ccircle cx='24' cy='8.5' r='7.5' fill='%23f2994a'/%3E%3Ccircle cx='8' cy='24' r='7.5' fill='%233f9be0'/%3E%3Crect width='15' height='15' x='16' y='16' rx='4' fill='%237c5cff'/%3E%3C/svg%3E">
+</head>
+<body class="app">
+
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Мозаика">
+    <span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span class="brand__name">Мозаика</span>
+  </a>
+
+  <div class="search">
+    <input id="search-input" type="search" placeholder="Найти человека по имени или логину"
+           autocomplete="off" aria-label="Поиск пользователей">
+    <div id="search-results" class="search__results hidden"></div>
+  </div>
+
+  <nav class="nav" aria-label="Разделы">
+    <button class="nav__item is-active" data-view="feed" type="button">Лента</button>
+    <button class="nav__item" data-view="messages" type="button">
+      Сообщения <span id="unread-badge" class="badge hidden">0</span>
+    </button>
+    <button class="nav__item" data-view="profile" type="button">Профиль</button>
+  </nav>
+
+  <button id="upload-open" class="button button--accent" type="button">Загрузить</button>
+
+  <div class="user-chip">
+    <span class="avatar" id="avatar" aria-hidden="true"></span>
+    <span class="user-chip__name" id="user-name"></span>
+    <button id="logout" class="icon-button" type="button" title="Выйти">Выйти</button>
+  </div>
+</header>
+
+<main class="page">
+
+  <section id="feed-view" class="view">
+    <div class="view__head">
+      <h1>Общая лента</h1>
+      <p class="muted" id="feed-count"></p>
+    </div>
+    <div id="feed" class="masonry"></div>
+    <div id="feed-empty" class="empty hidden">
+      <span class="empty__icon" aria-hidden="true">◇</span>
+      <h2>Пока пусто</h2>
+      <p>Загрузите первую фотографию — она появится здесь у всех.</p>
+    </div>
+    <div class="center">
+      <button id="load-more" class="button hidden" type="button">Показать ещё</button>
+    </div>
+  </section>
+
+  <section id="profile-view" class="view hidden">
+    <div class="profile-head">
+      <span class="avatar avatar--big" id="profile-avatar" aria-hidden="true"></span>
+      <div>
+        <h1 id="profile-name"></h1>
+        <p class="muted" id="profile-username"></p>
+      </div>
+      <button id="profile-write" class="button" type="button">Написать</button>
+    </div>
+    <div id="profile-grid" class="masonry"></div>
+    <p id="profile-empty" class="empty hidden">У этого пользователя пока нет публикаций.</p>
+    <div class="center">
+      <button id="profile-more" class="button hidden" type="button">Показать ещё</button>
+    </div>
+  </section>
+
+  <section id="messages-view" class="view hidden">
+    <div class="messenger">
+      <aside class="dialogs">
+        <div class="dialogs__head"><h2>Диалоги</h2></div>
+        <div id="dialogs-list" class="dialogs__list"></div>
+        <p id="dialogs-empty" class="empty empty--small">
+          Пока нет переписок. Найдите человека через поиск и напишите ему.
+        </p>
+      </aside>
+
+      <section class="chat">
+        <header class="chat__head">
+          <h2 id="chat-name">Выберите собеседника</h2>
+          <p id="chat-login" class="muted"></p>
+        </header>
+        <div id="chat-messages" class="chat__messages">
+          <p id="chat-placeholder" class="empty empty--small">
+            Откройте диалог слева или найдите человека через поиск.
+          </p>
+        </div>
+        <form id="chat-form" class="composer hidden">
+          <input id="chat-input" type="text" maxlength="2000"
+                 placeholder="Написать сообщение…" autocomplete="off">
+          <button class="button button--accent" type="submit">Отправить</button>
+        </form>
+      </section>
+    </div>
+  </section>
+
+</main>
+
+<dialog id="upload-dialog" class="dialog">
+  <form id="upload-form">
+    <h2>Новая публикация</h2>
+    <label id="dropzone" class="dropzone">
+      <input type="file" id="upload-file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+      <img id="upload-preview" class="dropzone__preview hidden" alt="Предпросмотр">
+      <span class="dropzone__icon" id="dropzone-icon" aria-hidden="true">⇪</span>
+      <span id="dropzone-text">Перетащите изображение сюда или нажмите, чтобы выбрать файл</span>
+      <span class="muted" style="font-size:12.5px">JPEG, PNG, GIF или WEBP, до 5 МБ</span>
+    </label>
+    <textarea id="upload-caption" maxlength="500" rows="3"
+              placeholder="Подпись к фотографии (необязательно)"></textarea>
+    <div class="dialog__actions">
+      <button type="button" id="upload-cancel" class="button">Отмена</button>
+      <button type="submit" id="upload-submit" class="button button--accent">Опубликовать</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="post-dialog" class="dialog dialog--post">
+  <button class="dialog__close" id="post-close" type="button" aria-label="Закрыть">×</button>
+  <div class="post-view">
+    <div class="post-view__media">
+      <img id="post-image" alt="">
+    </div>
+    <div class="post-view__side">
+      <div class="post-view__head">
+        <span class="avatar" id="post-avatar" aria-hidden="true"></span>
+        <div>
+          <strong id="post-author"></strong>
+          <div class="post-view__date muted" id="post-date"></div>
+        </div>
+      </div>
+      <p class="post-view__caption" id="post-caption"></p>
+      <div class="post-view__actions">
+        <button class="like" id="post-like" type="button">
+          <span class="like__icon" aria-hidden="true">♥</span>
+          <span class="like__count" id="post-likes">0</span>
+        </button>
+        <a class="button" id="post-download" href="#" download>Скачать фото</a>
+        <button class="button button--danger hidden" id="post-delete" type="button">Удалить</button>
+      </div>
+      <div class="comments">
+        <h3 class="comments__title">Комментарии <span id="comments-count"></span></h3>
+        <div class="comments__list" id="comments-list"></div>
+        <p class="comments__empty muted" id="comments-empty">Пока нет комментариев. Будьте первым.</p>
+        <form class="composer comments__form" id="comment-form">
+          <input id="comment-input" maxlength="500" autocomplete="off"
+                 placeholder="Ваш комментарий…">
+          <button class="button button--accent" type="submit">Отправить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<template id="post-template">
+  <article class="card">
+    <div class="card__media"><img alt="" loading="lazy"></div>
+    <div class="card__body">
+      <p class="card__caption"></p>
+      <div class="card__meta">
+        <button class="card__author" type="button">
+          <span class="avatar" aria-hidden="true"></span>
+          <span class="card__author-name"></span>
+        </button>
+        <div class="card__stats">
+          <button class="comments-link" type="button" title="Открыть комментарии">
+            <span aria-hidden="true">💬</span>
+            <span class="comments-count">0</span>
+          </button>
+          <button class="like" type="button" aria-label="Поставить лайк">
+            <span class="like__icon" aria-hidden="true">♥</span>
+            <span class="like__count">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </article>
+</template>
+
+<template id="search-hit-template">
+  <button class="search-hit" type="button">
+    <span class="avatar" aria-hidden="true"></span>
+    <span>
+      <span class="search-hit__name"></span><br>
+      <span class="search-hit__login"></span>
+    </span>
+  </button>
+</template>
+
+<template id="dialog-template">
+  <button class="dialog-item" type="button">
+    <span class="avatar" aria-hidden="true"></span>
+    <span class="dialog-item__body">
+      <span class="dialog-item__name"></span>
+      <span class="dialog-item__last"></span>
+    </span>
+    <span class="dialog-item__meta">
+      <span class="dialog-item__unread badge hidden">0</span>
+      <span class="dialog-item__time"></span>
+    </span>
+  </button>
+</template>
+
+<template id="message-template">
+  <div class="bubble">
+    <span class="bubble__text"></span>
+    <span class="bubble__time"></span>
+  </div>
+</template>
+
+<template id="comment-template">
+  <div class="comment">
+    <span class="avatar" aria-hidden="true"></span>
+    <div class="comment__body">
+      <div class="comment__head">
+        <strong class="comment__author"></strong>
+        <span class="comment__time"></span>
+      </div>
+      <p class="comment__text"></p>
+    </div>
+  </div>
+</template>
+
+<template id="search-post-template">
+  <button class="search-hit search-hit--post" type="button">
+    <img class="search-hit__thumb" alt="">
+    <span class="search-hit__body">
+      <span class="search-hit__name"></span><br>
+      <span class="search-hit__login"></span>
+    </span>
+  </button>
+</template>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

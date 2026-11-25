@@ -1,0 +1,14 @@
+{
+  "host": "0.0.0.0",
+  "port": 8000,
+  "db_path": "storage/mosaic.db",
+  "uploads_dir": "storage/uploads",
+  "web_dir": "web",
+  "log_path": "server.log",
+  "max_upload": 5242880,
+  "max_body": 6291456,
+  "max_header": 16384,
+  "timeout": 30.0,
+  "session_days": 7,
+  "log_level": "INFO"
+}

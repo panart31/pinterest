@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мозаика — вход</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='15' height='15' x='1' y='1' rx='4' fill='%23d6396f'/%3E%3Ccircle cx='24' cy='8.5' r='7.5' fill='%23f2994a'/%3E%3Ccircle cx='8' cy='24' r='7.5' fill='%233f9be0'/%3E%3Crect width='15' height='15' x='16' y='16' rx='4' fill='%237c5cff'/%3E%3C/svg%3E">
+</head>
+<body class="auth-body">
+
+<section class="auth-hero">
+  <div class="auth-hero__brand">
+    <span class="brand">
+      <span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="brand__name">Мозаика</span>
+    </span>
+  </div>
+  <div>
+    <h1>Собирайте моменты в общую мозаику</h1>
+    <p>Публикуйте фотографии, находите людей по интересам и переписывайтесь —
+       всё внутри одного приложения.</p>
+  </div>
+  <div class="auth-hero__tiles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+</section>
+
+<section class="auth-panel">
+  <div class="auth-card">
+    <h2 id="auth-title">С возвращением</h2>
+    <p id="auth-subtitle">Войдите, чтобы увидеть ленту.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tabs__item is-active" data-mode="login" type="button" role="tab">Вход</button>
+      <button class="tabs__item" data-mode="register" type="button" role="tab">Регистрация</button>
+    </div>
+
+    <form id="auth-form" novalidate>
+      <div class="field">
+        <label for="auth-username">Логин</label>
+        <input id="auth-username" name="username" autocomplete="username"
+               placeholder="например, ksenia" maxlength="32" required>
+      </div>
+
+      <div class="field hidden" id="display-name-field">
+        <label for="auth-display-name">Как вас показывать</label>
+        <input id="auth-display-name" name="display_name" autocomplete="nickname"
+               placeholder="Ксения" maxlength="40">
+      </div>
+
+      <div class="field">
+        <label for="auth-password">Пароль</label>
+        <input id="auth-password" name="password" type="password"
+               autocomplete="current-password" placeholder="не короче 6 символов" required>
+      </div>
+
+      <p id="auth-error" class="form-error" role="alert"></p>
+
+      <button id="auth-submit" class="button button--accent auth-submit" type="submit">
+        Войти
+      </button>
+    </form>
+
+    <p class="auth-hint">
+      Логин: 3–32 символа, латиница, цифры, точка, дефис или подчёркивание.
+      Пароль — от 6 символов. Данные хранятся на вашем сервере.
+    </p>
+  </div>
+</section>
+
+<script src="/static/auth.js"></script>
+</body>
+</html>
