@@ -49,15 +49,13 @@ def classify(address: str) -> str:
     """Поясняет, что это за адрес."""
     priority = address_priority(address)
     if priority == 9:
-        return "автоматический адрес (сеть не настроена)"
+        return "виртуальный или служебный адрес — не использовать"
     if priority == 0:
-        return "локальная сеть — подходит для второго устройства"
+        return "домашняя сеть — подходит для второго устройства"
     if priority == 1:
-        return "локальная сеть 10.x — подходит"
-    if priority == 2:
-        return "возможно, виртуальный адаптер (VMware/VirtualBox)"
-    if priority == 5:
-        return "виртуальный адаптер (Docker/WSL)"
+        return "локальная сеть — подходит для второго устройства"
+    if priority == 6:
+        return "возможно, виртуальный адаптер (VPN/Docker)"
     return "другой интерфейс"
 
 
