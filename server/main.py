@@ -66,9 +66,9 @@ def print_banner(config: Config, port: int) -> None:
     print(f"  На этом ПК:      http://127.0.0.1:{port}")
     addresses = local_addresses()
     if addresses:
-        print(f"  С другого ПК:    http://{addresses[0]}:{port}")
+        print(f"  Для телефона/второго ПК: http://{addresses[0]}:{port}")
     for address in addresses[1:]:
-        print(f"  Другой адрес:    http://{address}:{port}")
+        print(f"  Служебный адрес:        http://{address}:{port}  (не для телефона)")
     print(f"  База:            {config.db_path}")
     print(f"  Файлы:           {config.uploads_dir}")
     print(f"  Журнал:          {config.log_path} ({config.log_level})")
